@@ -1,0 +1,41 @@
+specVersion: 1.0.0
+name: astar-starter
+version: 0.0.1
+runner:
+  node:
+    name: '@subql/node'
+    version: '*'
+  query:
+    name: '@subql/query'
+    version: '*'
+description: This SubQuery project can be use as a starting point for Astar network
+repository: 'https://github.com/GuiGou12358/lucky-subql'
+schema:
+  file: ./schema.graphql
+network:
+  chainId: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6'
+  endpoint: 'wss://astar.api.onfinality.io/public-ws'
+  dictionary: 'https://api.subquery.network/sq/subquery/astar-dictionary'
+  chaintypes:
+    file: ./dist/chaintypes.js
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 442690
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: bondAndStake
+          kind: substrate/EventHandler
+          filter:
+            module: dappsStaking
+            method: BondAndStake
+        - handler: unbondAndUnstake
+          kind: substrate/EventHandler
+          filter:
+            module: dappsStaking
+            method: UnbondAndUnstake
+        - handler: nominationTransfer
+          kind: substrate/EventHandler
+          filter:
+            module: dappsStaking
+            method: NominationTransfer
