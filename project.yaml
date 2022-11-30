@@ -14,13 +14,15 @@ schema:
   file: ./schema.graphql
 network:
   chainId: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6'
-  endpoint: 'wss://astar.api.onfinality.io/public-ws'
+  endpoint: 'wss://rpc.shibuya.astar.network'
+  #chainId: '0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6'
+  #endpoint: 'wss://astar.api.onfinality.io/public-ws'
   dictionary: 'https://api.subquery.network/sq/subquery/astar-dictionary'
   chaintypes:
     file: ./dist/chaintypes.js
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 442690
+    startBlock: 2674210
     mapping:
       file: ./dist/index.js
       handlers:
@@ -39,3 +41,13 @@ dataSources:
           filter:
             module: dappsStaking
             method: NominationTransfer
+        - handler: reward
+          kind: substrate/EventHandler
+          filter:
+            module: dappsStaking
+            method: Reward
+        - handler: newDappStakingEra
+          kind: substrate/EventHandler
+          filter:
+            module: dappsStaking
+            method: NewDappStakingEra
