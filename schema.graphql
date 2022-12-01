@@ -1,47 +1,12 @@
 
 type Account @entity {
   id: ID! # account address
-  stakes: [BondAndStake] @derivedFrom(field: "account") #virtual field
-  unstakes: [UnbondAndUnstake] @derivedFrom(field: "account") #virtual field
-  nominationTransferIn: [NominationTransferIn] @derivedFrom(field: "account") #virtual field
-  nominationTransferOut: [NominationTransferOut] @derivedFrom(field: "account") #virtual field
+  stakes: [Stake] @derivedFrom(field: "account") #virtual field
   totalStake: BigInt!
 }
 
 type Stake @entity {
   id: ID! # Extrinsic hash
-  account: Account!
-  amount: BigInt!
-  era: BigInt!
-  blockNumber: BigInt!
-}
-
-type BondAndStake @entity {
-  id: ID! # Extrinsic hash
-  account: Account!
-  amount: BigInt!
-  era: BigInt!
-  blockNumber: BigInt!
-}
-
-type UnbondAndUnstake @entity {
-  id: ID! # Transaction hash
-  account: Account!
-  amount: BigInt!
-  era: BigInt!
-  blockNumber: BigInt!
-}
-
-type NominationTransferIn @entity {
-  id: ID! # Transaction hash
-  account: Account!
-  amount: BigInt!
-  era: BigInt!
-  blockNumber: BigInt!
-}
-
-type NominationTransferOut @entity {
-  id: ID! # Transaction hash
   account: Account!
   amount: BigInt!
   era: BigInt!

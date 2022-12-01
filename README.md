@@ -1,6 +1,8 @@
 # SubQuery - Index stakers for the dApp Lucky in Shibuya/Shiden/Astar Networks
 
-This project index all accounts staking in the given dApp
+This project index: 
+- all accounts staking in the given dApp 
+- all rewards received by the given dApp
 
 ## Preparation
 
@@ -63,94 +65,59 @@ Open your browser and head to `http://localhost:3000`.
 
 Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
 
-For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
 
-
-All stakers with their stake
+Query stakers for era 2100 and dApp's rewards for era 2100 
 ```graphql
-query{
-    accounts (
-        filter: { totalStake : {notEqualTo: "0"}}
+query {
+  stakes(filter: { era: {  lessThanOrEqualTo: "2100" } }) {
+    groupedAggregates(
+      groupBy: [ACCOUNT_ID], 
+      having: { sum: {amount: { notEqualTo: "0" }}}
     ) {
-        totalCount
-        nodes{
-            id
-            totalStake
-        }
+      sum{amount}, keys
     }
+  }
+  developerRewards(filter: { era: { equalTo: "2100" } }) {
+    nodes {amount, era}
+  }
 }
 ```
 
-Query given stakers
+Query stakers for era 2100
 ```graphql
-query{
-    accounts (
-        filter:{
-            id:{
-                in: [
-                    "..."
-                ]
-            }
+query {
+  accounts {
+    nodes {
+      id
+      stakes(filter: { era: { lessThanOrEqualTo: "2100" } }) {
+        aggregates{
+          sum {
+            amount
+          }
         }
-    ){
+        groupedAggregates(groupBy: [ACCOUNT_ID]) {
+          sum{amount}
+        	keys
+        }        
         nodes {
-            id
-            totalStake
+          accountId
+          amount
+          era
         }
+      }
     }
+  }
+  developerRewards {
+    nodes {
+      amount
+      era
+    }
+  }
+  palletInfos {
+    nodes {
+      currentEra
+    }
+  }
 }
-```
 
-Some statistics
-```graphql
-query{
-    accounts (
-        filter: { totalStake : {notEqualTo: "0"}}
-    ) {
-        totalCount
-        aggregates {
-            sum {totalStake}
-            min {totalStake}
-            max {totalStake}
-            average {totalStake}
-        }
-    }
-}
-```
-
-All stakers with operations (stake/unstake/nominationTranfer)
-```graphql
-query{
-    accounts {
-        totalCount
-        nodes{
-            id
-            totalStake
-            stakes {
-                nodes {
-                    id
-                    amount
-                }
-            }
-            unstakes {
-                nodes {
-                    id
-                    amount
-                }
-            }
-            nominationTransferIn {
-                nodes {
-                    id
-                    amount
-                }
-            }
-            nominationTransferOut {
-                nodes {
-                    id
-                    amount
-                }
-            }
-        }
-    }
-}
 ```
