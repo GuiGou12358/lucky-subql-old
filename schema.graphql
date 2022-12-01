@@ -8,6 +8,14 @@ type Account @entity {
   totalStake: BigInt!
 }
 
+type Stake @entity {
+  id: ID! # Extrinsic hash
+  account: Account!
+  amount: BigInt!
+  era: BigInt!
+  blockNumber: BigInt!
+}
+
 type BondAndStake @entity {
   id: ID! # Extrinsic hash
   account: Account!
@@ -43,6 +51,7 @@ type NominationTransferOut @entity {
 type DeveloperReward @entity {
   id: ID! # Transaction hash
   era: BigInt!
+  account: Account!
   amount: BigInt!
 }
 

@@ -4,6 +4,7 @@ import {
 
 import {
 	Account,
+	Stake,
 	BondAndStake,
 	UnbondAndUnstake,
 	NominationTransferIn,
@@ -18,7 +19,7 @@ import {
 } from "@polkadot/types/interfaces";
 
 const DAPPSTAKING_CONTRACT_ID = "bc3yCAej7WxPBi4x1Ba1zru9HtieZrW7jk15QmGWSwZ7D6G";
-const DAPPSTAKING_DEVELOPER_ID = "bgs2XegEVdJa1dgVmBichw9mLRkfrJRgnV6YX4LESGF6CJz";
+//const DAPPSTAKING_DEVELOPER_ID = "bgs2XegEVdJa1dgVmBichw9mLRkfrJRgnV6YX4LESGF6CJz";
 
 
 async function getCurrentEra(): Promise<bigint> {
@@ -61,12 +62,21 @@ export async function bondAndStake(event: SubstrateEvent): Promise<void> {
 	userAccount.totalStake += amount;
 	await userAccount.save();
 
-	let stake = new BondAndStake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+	let bondAndStake = new BondAndStake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+	bondAndStake.accountId = account.toString();
+	bondAndStake.amount = amount;
+	bondAndStake.era = await getCurrentEra();
+	bondAndStake.blockNumber = event.block.block.header.number.toBigInt();
+	await bondAndStake.save();
+
+
+	let stake = new Stake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
 	stake.accountId = account.toString();
 	stake.amount = amount;
 	stake.era = await getCurrentEra();
 	stake.blockNumber = event.block.block.header.number.toBigInt();
 	await stake.save();
+
 }
 
 
@@ -105,6 +115,13 @@ export async function unbondAndUnstake(event: SubstrateEvent): Promise<void> {
 	unstake.era = await getCurrentEra();
 	unstake.blockNumber = event.block.block.header.number.toBigInt();
 	await unstake.save();
+
+	let stake = new Stake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+	stake.accountId = account.toString();
+	stake.amount = -amount;
+	stake.era = await getCurrentEra();
+	stake.blockNumber = event.block.block.header.number.toBigInt();
+	await stake.save();
 }
 
 
@@ -146,6 +163,13 @@ export async function nominationTransfer(event: SubstrateEvent): Promise<void> {
 		transfer.blockNumber = event.block.block.header.number.toBigInt();
 		await transfer.save();
 
+		let stake = new Stake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+		stake.accountId = account.toString();
+		stake.amount = amount;
+		stake.era = await getCurrentEra();
+		stake.blockNumber = event.block.block.header.number.toBigInt();
+		await stake.save();
+
     } else if (originSmartContract.toString().includes(DAPPSTAKING_CONTRACT_ID)){
     	await logger.info("---------- DappsStaking - nominationTransferOut --------- ");
     	//await logger.info(event.block.block.header.hash.toString());
@@ -163,6 +187,13 @@ export async function nominationTransfer(event: SubstrateEvent): Promise<void> {
 		transfer.blockNumber = event.block.block.header.number.toBigInt();
 		await transfer.save();
 
+		let stake = new Stake(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+		stake.accountId = account.toString();
+		stake.amount = -amount;
+		stake.era = await getCurrentEra();
+		stake.blockNumber = event.block.block.header.number.toBigInt();
+		await stake.save();
+
     } else {
     	await logger.info("---------- DappsStaking - nominationTransfer ERROR --------- ");
     	await logger.info(event.block.block.header.hash.toString());
@@ -177,15 +208,17 @@ export async function reward(event: SubstrateEvent): Promise<void> {
         },
     } = event;
 
-    if (!smartContract.toString().includes(DAPPSTAKING_DEVELOPER_ID)){
+    await logger.info("---------- DappsStaking - Reward --------- ");
+    if (!smartContract.toString().includes(DAPPSTAKING_CONTRACT_ID)){
+		await logger.info("SmartContract: " + smartContract.toString());
 		return;
     }
 
-    await logger.info("---------- DappsStaking - Reward --------- ");
 
     const amount = (balanceOf as Balance).toBigInt();
 
 	let reward = new DeveloperReward(`${event.block.block.header.number.toNumber()}-${event.idx}`);
+	reward.accountId = account.toString();
 	reward.amount = amount;
 	reward.era = BigInt(era.toString());
 	await reward.save();
