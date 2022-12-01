@@ -66,10 +66,10 @@ Open your browser and head to `http://localhost:3000`.
 Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
 
 
-Query stakers for era 2100 and dApp's rewards for era 2100 
+Query amount staked by account 
 ```graphql
 query {
-  stakes(filter: { era: {  lessThanOrEqualTo: "2100" } }) {
+  stakes{
     groupedAggregates(
       groupBy: [ACCOUNT_ID], 
       having: { sum: {amount: { notEqualTo: "0" }}}
@@ -77,47 +77,67 @@ query {
       sum{amount}, keys
     }
   }
+}
+```
+
+Query amount staked by account for a given era
+```graphql
+query {
+  stakes(filter: { era: { lessThanOrEqualTo: "2100" }}) {
+    groupedAggregates(
+      groupBy: [ACCOUNT_ID], 
+      having: { sum: { amount: { notEqualTo: "0" }}}
+    ) {
+      sum{amount}, keys
+    }
+  }
+}
+```
+or 
+```graphql
+query {
+    accounts {
+        nodes {
+            id
+            stakes {        
+                groupedAggregates(
+                    groupBy: [ACCOUNT_ID], 
+                    having: { sum: { amount: { notEqualTo: "0" }}}
+                ) {     
+      		        sum{amount}
+      	        }
+            }
+  	    }
+    }   
+}
+```
+
+Query the dApp's rewards
+```graphql
+query {
+  developerRewards {
+    aggregates {sum{amount}}
+    nodes {amount, era}
+  }
+}
+```
+
+Query the dApp's rewards for a given era
+```graphql
+query {
   developerRewards(filter: { era: { equalTo: "2100" } }) {
     nodes {amount, era}
   }
 }
 ```
 
-Query stakers for era 2100
+Current era for the dApp Staking pallet
 ```graphql
 query {
-  accounts {
-    nodes {
-      id
-      stakes(filter: { era: { lessThanOrEqualTo: "2100" } }) {
-        aggregates{
-          sum {
-            amount
-          }
-        }
-        groupedAggregates(groupBy: [ACCOUNT_ID]) {
-          sum{amount}
-        	keys
-        }        
-        nodes {
-          accountId
-          amount
-          era
-        }
-      }
-    }
-  }
-  developerRewards {
-    nodes {
-      amount
-      era
-    }
-  }
   palletInfos {
     nodes {
       currentEra
     }
   }
 }
-
 ```
