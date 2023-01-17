@@ -146,7 +146,7 @@ query {
 }
 ```
 
-#### Query data comming from teh dApp 'Lucky'  
+#### Query data comming from the dApp 'Lucky'  
 
 Query the total stake and the rewards distributed by account
 ```graphql
