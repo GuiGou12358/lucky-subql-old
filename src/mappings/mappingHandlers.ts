@@ -211,7 +211,7 @@ export async function raffleDone(event: WasmEvent<RaffleDoneEvent>): Promise<voi
     await logger.info("pendingRewards: " + pendingRewards);
     await logger.info("nbWinners: " + nbWinners);
 
-	let raffleDone = new RaffleDone(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	let raffleDone = new RaffleDone(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf()}`);
 	raffleDone.era = era.valueOf();
 	raffleDone.nb_winners  = nbWinners.valueOf();
 	raffleDone.total_rewards  = pendingRewards.valueOf();
@@ -240,7 +240,7 @@ export async function pendingReward(event: WasmEvent<PendingRewardEvent>): Promi
 	userAccount.totalPending += amount.toBigInt();
 	await userAccount.save();
 
-	let reward = new Reward(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	let reward = new Reward(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf()}`);
 	reward.accountId = account.toString();
 	reward.era = era.valueOf();
 	reward.amount = amount.toBigInt();
@@ -267,7 +267,7 @@ export async function rewardsClaimed(event: WasmEvent<RewardsClaimedEvent>): Pro
 	userAccount.totalPending -= amount.toBigInt();
 	await userAccount.save();
 
-	let rewardsClaimed = new RewardsClaimed(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	let rewardsClaimed = new RewardsClaimed(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf()}`);
 	rewardsClaimed.accountId = account.toString();
 	rewardsClaimed.amount = amount.toBigInt();
 	await rewardsClaimed.save();

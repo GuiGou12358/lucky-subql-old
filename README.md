@@ -1,8 +1,10 @@
 # SubQuery - Index stakers for the dApp Lucky in Shibuya/Shiden/Astar Networks
 
 This project index: 
-- all accounts staking in the given dApp 
-- all rewards received by the given dApp
+- all accounts staking in the dApp 'Lucky' in the context of dAppStaking module
+- all developer rewards received by the dApp 'Lucky' in the context of dAppStaking module
+- all pending rewards distributed by the dApp 'Lucky' 
+- all claimed rewards distributed by the dApp 'Lucky' 
 
 ## Preparation
 
@@ -66,7 +68,9 @@ Open your browser and head to `http://localhost:3000`.
 Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
 
 
-Query amount staked by account 
+#### Query data comming from dAppStaking module
+
+Query amount staked by account via the dAppStaking
 ```graphql
 query {
   stakes{
@@ -139,5 +143,43 @@ query {
       currentEra
     }
   }
+}
+```
+
+#### Query data comming from teh dApp 'Lucky'  
+
+Query the total stake and the rewards distributed by account
+```graphql
+query {  
+  accounts(){
+    nodes{
+      id, 
+      totalStake, 
+      totalRewards, 
+      totalPending, 
+      totalClaimed,
+      rewards{nodes{era, amount}},
+      rewardsClaimed{nodes{amount}}
+    }    
+  }
+}
+```
+
+
+
+Query a specific account
+```graphql
+query {  
+  accounts(filter : {id: {equalTo: "5C...hM"}}){
+    nodes{
+      id,
+      totalStake, 
+      totalRewards, 
+      totalPending, 
+      totalClaimed,
+      rewards{nodes{era, amount}},
+      rewardsClaimed{nodes{amount}}
+    }  
+  } 
 }
 ```
