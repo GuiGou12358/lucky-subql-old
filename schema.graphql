@@ -3,6 +3,11 @@ type Account @entity {
   id: ID! # account address
   stakes: [Stake] @derivedFrom(field: "account") #virtual field
   totalStake: BigInt!
+  rewards: [Reward] @derivedFrom(field: "account") #virtual field
+  rewardsClaimed: [RewardsClaimed] @derivedFrom(field: "account") #virtual field
+  totalRewards: BigInt!
+  totalClaimed: BigInt!
+  totalPending: BigInt!
 }
 
 type Stake @entity {
@@ -29,5 +34,25 @@ type DappStakingEra @entity {
   id: ID! # Transaction hash
   era: BigInt!
   blockNumber: BigInt!
+}
+
+type RaffleDone @entity {
+  id: ID! # Transaction hash
+  era: BigInt!
+  total_rewards: BigInt!
+  nb_winners: BigInt!
+}
+
+type Reward @entity {
+  id: ID! # Transaction hash
+  account: Account!
+  era: BigInt!
+  amount: BigInt!
+}
+
+type RewardsClaimed @entity {
+  id: ID! # Transaction hash
+  account: Account!
+  amount: BigInt!
 }
 

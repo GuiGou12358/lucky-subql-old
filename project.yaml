@@ -57,3 +57,55 @@ dataSources:
           filter:
             module: dappsStaking
             method: NewDappStakingEra
+  - kind: substrate/Wasm
+    startBlock: 2674210
+    processor:
+      file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
+      options:
+        abi: luckyRaffle
+        contract: bT55Mwv3h9gkpY3vQgsoTbBddAEHktfgHcfgSXwFfzUtigR
+    assets:
+      luckyRaffle:
+        file: ./metadata/lucky_raffle_metadata.json
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: raffleDone
+          kind: substrate/WasmEvent
+          filter:
+            identifier: RaffleDone
+  - kind: substrate/Wasm
+    startBlock: 2674210
+    processor:
+      file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
+      options:
+        abi: rewardManager
+        contract: ba7rMagiHkAYAyr8DAuMQAAkhnabPmsLEVfiJvUifxNajz9
+    assets:
+      rewardManager:
+        file: ./metadata/reward_manager_metadata.json
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: pendingReward
+          kind: substrate/WasmEvent
+          filter:
+            identifier: PendingReward
+  - kind: substrate/Wasm
+    startBlock: 2674210
+    processor:
+      file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
+      options:
+        abi: rewardManager
+        contract: ba7rMagiHkAYAyr8DAuMQAAkhnabPmsLEVfiJvUifxNajz9
+    assets:
+      rewardManager:
+        file: ./metadata/reward_manager_metadata.json
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: rewardsClaimed
+          kind: substrate/WasmEvent
+          filter:
+            identifier: RewardsClaimed
+            

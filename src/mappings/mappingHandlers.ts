@@ -1,22 +1,21 @@
-import {
-	SubstrateEvent,
-} from "@subql/types";
+import { SubstrateEvent } from "@subql/types";
+import { WasmEvent } from "@subql/substrate-wasm-processor";
 
 import {
 	Account,
 	Stake,
 	DeveloperReward,
 	DappStakingEra,
-	PalletInfo
+	PalletInfo,
+	RaffleDone,
+	Reward,
+	RewardsClaimed
 } from "../types";
 
-import {
-	Balance
-} from "@polkadot/types/interfaces";
+import { Balance, AccountId } from "@polkadot/types/interfaces";
 
 const DAPPSTAKING_CONTRACT_ID = "bc3yCAej7WxPBi4x1Ba1zru9HtieZrW7jk15QmGWSwZ7D6G";
 //const DAPPSTAKING_DEVELOPER_ID = "bgs2XegEVdJa1dgVmBichw9mLRkfrJRgnV6YX4LESGF6CJz";
-
 
 async function getCurrentEra(): Promise<bigint> {
 	let currentEra = BigInt(0);
@@ -26,6 +25,19 @@ async function getCurrentEra(): Promise<bigint> {
     }
 	return currentEra;
 }
+
+async function getAccount(accountId: string): Promise<Account> {
+    let userAccount = await Account.get(accountId);
+    if (!userAccount) {
+		userAccount = new Account(accountId);
+		userAccount.totalStake = BigInt(0);
+		userAccount.totalRewards = BigInt(0);
+		userAccount.totalClaimed = BigInt(0);
+		userAccount.totalPending = BigInt(0);
+    }
+	return userAccount;
+}
+
 
 
 export async function bondAndStake(event: SubstrateEvent): Promise<void> {
@@ -43,11 +55,7 @@ export async function bondAndStake(event: SubstrateEvent): Promise<void> {
 
     const amount = (balanceOf as Balance).toBigInt();
 
-    let userAccount = await Account.get(account.toString());
-    if (!userAccount) {
-		userAccount = new Account(account.toString());
-		userAccount.totalStake = BigInt(0);
-    }
+    let userAccount = await getAccount(account.toString());
 	userAccount.totalStake += amount;
 	await userAccount.save();
 
@@ -76,11 +84,7 @@ export async function unbondAndUnstake(event: SubstrateEvent): Promise<void> {
 
     const amount = (balanceOf as Balance).toBigInt();
 
-    let userAccount = await Account.get(account.toString());
-    if (!userAccount) {
-		userAccount = new Account(account.toString());
-		userAccount.totalStake = BigInt(0);
-    }
+    let userAccount = await getAccount(account.toString());
 	userAccount.totalStake -= amount;
 	await userAccount.save();
 
@@ -106,11 +110,7 @@ export async function nominationTransfer(event: SubstrateEvent): Promise<void> {
 		return;
     }
 
-    let userAccount = await Account.get(account.toString());
-    if (!userAccount) {
-		userAccount = new Account(account.toString());
-		userAccount.totalStake = BigInt(0);
-    }
+    let userAccount = await getAccount(account.toString());
 
 	const amount = (balanceOf as Balance).toBigInt();
 
@@ -155,7 +155,6 @@ export async function reward(event: SubstrateEvent): Promise<void> {
     } = event;
 
     if (!smartContract.toString().includes(DAPPSTAKING_CONTRACT_ID)){
-		await logger.info("SmartContract: " + smartContract.toString());
 		return;
     }
 
@@ -191,5 +190,86 @@ export async function newDappStakingEra(event: SubstrateEvent): Promise<void> {
     }
 	palletInfo.currentEra = newEra;
 	await palletInfo.save();
+
+}
+
+
+type RaffleDoneEvent = [AccountId, BigInt, BigInt, BigInt] & {
+	contract: AccountId,
+	era: BigInt,
+	pendingRewards: Balance,
+	nbWinners: BigInt,
+}
+
+export async function raffleDone(event: WasmEvent<RaffleDoneEvent>): Promise<void> {
+
+    await logger.info("---------- Raffle Done  --------- ");
+
+	const [contract, era, pendingRewards, nbWinners] = event.args;
+    await logger.info("contract: " + contract);
+    await logger.info("era: " + era);
+    await logger.info("pendingRewards: " + pendingRewards);
+    await logger.info("nbWinners: " + nbWinners);
+
+	let raffleDone = new RaffleDone(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	raffleDone.era = era.valueOf();
+	raffleDone.nb_winners  = nbWinners.valueOf();
+	raffleDone.total_rewards  = pendingRewards.valueOf();
+	await raffleDone.save();
+
+}
+
+
+type PendingRewardEvent = [AccountId, BigInt, Balance] & {
+	account: AccountId,
+	era: BigInt,
+	amount: Balance,
+}
+
+export async function pendingReward(event: WasmEvent<PendingRewardEvent>): Promise<void> {
+
+    await logger.info("---------- Pending Reward --------- ");
+
+	const [account, era, amount] = event.args;
+    await logger.info("account: " + account);
+    await logger.info("era: " + era);
+    await logger.info("amount: " + amount);
+
+    let userAccount = await getAccount(account.toString());
+	userAccount.totalRewards += amount.toBigInt();
+	userAccount.totalPending += amount.toBigInt();
+	await userAccount.save();
+
+	let reward = new Reward(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	reward.accountId = account.toString();
+	reward.era = era.valueOf();
+	reward.amount = amount.toBigInt();
+	await reward.save();
+
+}
+
+
+type RewardsClaimedEvent = [AccountId, Balance] & {
+	account: AccountId,
+	amount: Balance,
+}
+
+export async function rewardsClaimed(event: WasmEvent<RewardsClaimedEvent>): Promise<void> {
+
+    await logger.info("---------- Rewards Claimed --------- ");
+
+	const [account, amount] = event.args;
+    await logger.info("account: " + account);
+    await logger.info("amount: " + amount);
+
+    let userAccount = await getAccount(account.toString());
+	userAccount.totalClaimed += amount.toBigInt();
+	userAccount.totalPending -= amount.toBigInt();
+	await userAccount.save();
+
+	let rewardsClaimed = new RewardsClaimed(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf}`);
+	rewardsClaimed.accountId = account.toString();
+	rewardsClaimed.amount = amount.toBigInt();
+	await rewardsClaimed.save();
 
 }
