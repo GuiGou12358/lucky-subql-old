@@ -135,6 +135,15 @@ query {
 }
 ```
 
+Query the last dApp's rewards
+```graphql
+query {
+  developerRewards(orderBy: ERA_DESC, first:1) {
+    nodes {amount, era}
+  }
+}
+```
+
 Current era for the dApp Staking pallet
 ```graphql
 query {
