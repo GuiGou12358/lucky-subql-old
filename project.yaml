@@ -28,7 +28,7 @@ network:
     file: ./dist/chaintypes.js
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 2674210
+    startBlock: 3134592
     mapping:
       file: ./dist/index.js
       handlers:
@@ -58,12 +58,12 @@ dataSources:
             module: dappsStaking
             method: NewDappStakingEra
   - kind: substrate/Wasm
-    startBlock: 2674210
+    startBlock: 3134592
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: luckyRaffle
-        contract: bT55Mwv3h9gkpY3vQgsoTbBddAEHktfgHcfgSXwFfzUtigR
+        contract: X7Rxmt4JshNbZ9uEujXhAKkZBNSmpJwvZGPExCHpt6ebmCe
     assets:
       luckyRaffle:
         file: ./metadata/lucky_raffle_metadata.json
@@ -75,12 +75,12 @@ dataSources:
           filter:
             identifier: RaffleDone
   - kind: substrate/Wasm
-    startBlock: 2674210
+    startBlock: 3134592
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: rewardManager
-        contract: ba7rMagiHkAYAyr8DAuMQAAkhnabPmsLEVfiJvUifxNajz9
+        contract: W66fXdDBkcp7RkZmsS7qLLpjdHB4FDSqWgJArbvCYG3PQ48
     assets:
       rewardManager:
         file: ./metadata/reward_manager_metadata.json
@@ -92,12 +92,12 @@ dataSources:
           filter:
             identifier: PendingReward
   - kind: substrate/Wasm
-    startBlock: 2674210
+    startBlock: 3134592
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: rewardManager
-        contract: ba7rMagiHkAYAyr8DAuMQAAkhnabPmsLEVfiJvUifxNajz9
+        contract: W66fXdDBkcp7RkZmsS7qLLpjdHB4FDSqWgJArbvCYG3PQ48
     assets:
       rewardManager:
         file: ./metadata/reward_manager_metadata.json

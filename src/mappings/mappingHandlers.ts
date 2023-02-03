@@ -14,8 +14,7 @@ import {
 
 import { Balance, AccountId } from "@polkadot/types/interfaces";
 
-const DAPPSTAKING_CONTRACT_ID = "bc3yCAej7WxPBi4x1Ba1zru9HtieZrW7jk15QmGWSwZ7D6G";
-//const DAPPSTAKING_DEVELOPER_ID = "bgs2XegEVdJa1dgVmBichw9mLRkfrJRgnV6YX4LESGF6CJz";
+const DAPPSTAKING_CONTRACT_ID = "bfH3CKzo3yDNDgo7EVD3uTFnoAj5fDY9NyCMpZg23VJfhNW";
 
 async function getCurrentEra(): Promise<bigint> {
 	let currentEra = BigInt(0);
