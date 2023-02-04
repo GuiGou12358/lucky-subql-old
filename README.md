@@ -160,7 +160,7 @@ query {
 Query the total stake and the rewards distributed by account
 ```graphql
 query {  
-  accounts(){
+  accounts{
     nodes{
       id, 
       totalStake, 
