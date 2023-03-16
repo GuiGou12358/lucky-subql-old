@@ -28,7 +28,7 @@ network:
     file: ./dist/chaintypes.js
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 3134592
+    startBlock: 3393298
     mapping:
       file: ./dist/index.js
       handlers:
@@ -58,7 +58,7 @@ dataSources:
             module: dappsStaking
             method: NewDappStakingEra
   - kind: substrate/Wasm
-    startBlock: 3134592
+    startBlock: 3393298
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
@@ -75,7 +75,7 @@ dataSources:
           filter:
             identifier: RaffleDone
   - kind: substrate/Wasm
-    startBlock: 3134592
+    startBlock: 3393298
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
@@ -92,7 +92,7 @@ dataSources:
           filter:
             identifier: PendingReward
   - kind: substrate/Wasm
-    startBlock: 3134592
+    startBlock: 3393298
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
