@@ -41,6 +41,8 @@ type RaffleDone @entity {
   era: BigInt!
   total_rewards: BigInt!
   nb_winners: BigInt!
+	nb_participants: BigInt!
+	total_value: BigInt!
 }
 
 type Reward @entity {

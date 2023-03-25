@@ -193,27 +193,33 @@ export async function newDappStakingEra(event: SubstrateEvent): Promise<void> {
 }
 
 
-type RaffleDoneEvent = [AccountId, BigInt, BigInt, BigInt] & {
+type RaffleDoneEvent = [AccountId, BigInt, Balance, BigInt, BigInt, Balance] & {
 	contract: AccountId,
 	era: BigInt,
 	pendingRewards: Balance,
 	nbWinners: BigInt,
+	nbParticipants: BigInt,
+	totalValue: Balance,
 }
 
 export async function raffleDone(event: WasmEvent<RaffleDoneEvent>): Promise<void> {
 
     await logger.info("---------- Raffle Done  --------- ");
 
-	const [contract, era, pendingRewards, nbWinners] = event.args;
+	const [contract, era, pendingRewards, nbWinners, nbParticipants, totalValue] = event.args;
     await logger.info("contract: " + contract);
     await logger.info("era: " + era);
     await logger.info("pendingRewards: " + pendingRewards);
     await logger.info("nbWinners: " + nbWinners);
+    await logger.info("nbParticipants: " + nbParticipants);
+    await logger.info("totalValue: " + totalValue);
 
 	let raffleDone = new RaffleDone(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf()}`);
 	raffleDone.era = era.valueOf();
-	raffleDone.nb_winners  = nbWinners.valueOf();
-	raffleDone.total_rewards  = pendingRewards.valueOf();
+	raffleDone.nb_winners = nbWinners.valueOf();
+	raffleDone.total_rewards = pendingRewards.toBigInt();
+	raffleDone.nb_participants = nbParticipants.valueOf();
+	raffleDone.total_value = totalValue.toBigInt();
 	await raffleDone.save();
 
 }
