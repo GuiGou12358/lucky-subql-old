@@ -159,6 +159,17 @@ export async function reward(event: SubstrateEvent): Promise<void> {
 
     await logger.info("---------- DappsStaking - Reward --------- ");
 
+	/* save the developer account the first time to avoid an error with FK */
+    let developerAccount = await Account.get(account.toString());
+    if (!developerAccount) {
+		developerAccount = new Account(account.toString());
+		developerAccount.totalStake = BigInt(0);
+		developerAccount.totalRewards = BigInt(0);
+		developerAccount.totalClaimed = BigInt(0);
+		developerAccount.totalPending = BigInt(0);
+		await developerAccount.save();
+    }
+
     const amount = (balanceOf as Balance).toBigInt();
 
 	let reward = new DeveloperReward(`${event.block.block.header.number.toNumber()}-${event.idx}`);
