@@ -15,6 +15,7 @@ import {
 import { Balance, AccountId } from "@polkadot/types/interfaces";
 
 const DAPPSTAKING_CONTRACT_ID = "Xz3sHvmRgRY3mt3qQ3SjZ3aUPQTfHkj4rKeoQM6VJrenD3W";
+const DAPPSTAKING_DEVELOPER_ID = "WayJSoeDvHLJ8rXPqrPyQQwznntbxvjwvmq1AKBpu9phYHr";
 
 async function getCurrentEra(): Promise<bigint> {
 	let currentEra = BigInt(0);
@@ -154,6 +155,10 @@ export async function reward(event: SubstrateEvent): Promise<void> {
     } = event;
 
     if (!smartContract.toString().includes(DAPPSTAKING_CONTRACT_ID)){
+		return;
+    }
+
+	if (!account.toString().includes(DAPPSTAKING_DEVELOPER_ID)){
 		return;
     }
 
