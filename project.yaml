@@ -59,13 +59,31 @@ dataSources:
           filter:
             module: dappsStaking
             method: NewDappStakingEra
+# PREVIOUS CONTRACT
+#  - kind: substrate/Wasm
+#    startBlock: 3393298
+#    processor:
+#      file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
+#      options:
+#        abi: luckyRaffle
+#        contract: YzxUd9jJ4L7JQZhYrRgwwbqpeSkc9DSUQGJtte4T8LdmQSS
+#    assets:
+#      luckyRaffle:
+#        file: ./metadata/lucky_raffle_metadata.json
+#    mapping:
+#      file: ./dist/index.js
+#      handlers:
+#        - handler: raffleDone
+#          kind: substrate/WasmEvent
+#          filter:
+#            identifier: RaffleDone
   - kind: substrate/Wasm
-    startBlock: 3393298
+    startBlock: 3648370
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: luckyRaffle
-        contract: YzxUd9jJ4L7JQZhYrRgwwbqpeSkc9DSUQGJtte4T8LdmQSS
+        contract: arobt7C1EEULtwsVhxSQnjA5ajrTsZnUBBU5fJV7z356Sp7
     assets:
       luckyRaffle:
         file: ./metadata/lucky_raffle_metadata.json
