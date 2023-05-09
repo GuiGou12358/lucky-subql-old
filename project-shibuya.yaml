@@ -13,8 +13,14 @@ repository: "https://github.com/GuiGou12358/lucky-subql"
 schema:
   file: ./schema.graphql
 network:
-  chainId: "0xf1cf9022c7ebb34b162d5b5e34e705a5a740b2d0ecc1009fb89023e62a488108"
-  endpoint: "wss://shiden.api.onfinality.io/ws?apikey=0f201666-ef1e-42d5-b901-7683cb755286"
+  chainId: "0xddb89973361a170839f80f152d2e9e38a376a5a7eccefcade763f46a8e567019"
+  endpoint: "wss://rpc.shibuya.astar.network"
+  #endpoint: "wss://shibuya-rpc.dwellir.com"
+  bypassBlocks: [3430238, 3636456]
+  
+  #chainId: "0xf1cf9022c7ebb34b162d5b5e34e705a5a740b2d0ecc1009fb89023e62a488108"
+  #endpoint: "wss://shiden.api.onfinality.io/ws?apikey=f3f17916-0fb2-456c-9f23-93ebf374f68c"  
+  #endpoint: "wss://rpc.shiden.astar.network"
   dictionary: "https://api.subquery.network/sq/subquery/shiden-dictionary"
   
   #chainId: "0x9eb76c5184c4ab8679d2d5d819fdf90b9c001403e9e17da2e14b6d8aec4029c6"
@@ -24,7 +30,7 @@ network:
     file: ./dist/chaintypes.js
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 3964500
+    startBlock: 3393298
     mapping:
       file: ./dist/index.js
       handlers:
@@ -53,13 +59,31 @@ dataSources:
           filter:
             module: dappsStaking
             method: NewDappStakingEra
+# PREVIOUS CONTRACT
+#  - kind: substrate/Wasm
+#    startBlock: 3393298
+#    processor:
+#      file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
+#      options:
+#        abi: luckyRaffle
+#        contract: YzxUd9jJ4L7JQZhYrRgwwbqpeSkc9DSUQGJtte4T8LdmQSS
+#    assets:
+#      luckyRaffle:
+#        file: ./metadata/lucky_raffle_metadata.json
+#    mapping:
+#      file: ./dist/index.js
+#      handlers:
+#        - handler: raffleDone
+#          kind: substrate/WasmEvent
+#          filter:
+#            identifier: RaffleDone
   - kind: substrate/Wasm
-    startBlock: 3964500
+    startBlock: 3648370
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: luckyRaffle
-        contract: antwZPZH7fuhLwcjKQUT2cbpfjcKUJS1bt1Lnq2VxSszg8d
+        contract: arobt7C1EEULtwsVhxSQnjA5ajrTsZnUBBU5fJV7z356Sp7
     assets:
       luckyRaffle:
         file: ./metadata/lucky_raffle_metadata.json
@@ -71,12 +95,12 @@ dataSources:
           filter:
             identifier: RaffleDone
   - kind: substrate/Wasm
-    startBlock: 3964500
+    startBlock: 3393298
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: rewardManager
-        contract: X6yBHZm9MGzedCVBn6nGHHUDxEnjUNzSoN4aqAP4qooQpEU
+        contract: WDtNnQgygsCXKfjdvL5TgimewWhcBhJgSSCkb5u5pzZJTpR
     assets:
       rewardManager:
         file: ./metadata/reward_manager_metadata.json
@@ -88,12 +112,12 @@ dataSources:
           filter:
             identifier: PendingReward
   - kind: substrate/Wasm
-    startBlock: 3964500
+    startBlock: 3393298
     processor:
       file: ./node_modules/@subql/substrate-wasm-processor/dist/bundle.js
       options:
         abi: rewardManager
-        contract: X6yBHZm9MGzedCVBn6nGHHUDxEnjUNzSoN4aqAP4qooQpEU
+        contract: WDtNnQgygsCXKfjdvL5TgimewWhcBhJgSSCkb5u5pzZJTpR
     assets:
       rewardManager:
         file: ./metadata/reward_manager_metadata.json

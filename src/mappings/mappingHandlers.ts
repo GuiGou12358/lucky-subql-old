@@ -14,8 +14,13 @@ import {
 
 import { Balance, AccountId } from "@polkadot/types/interfaces";
 
-const DAPPSTAKING_CONTRACT_ID = "Xz3sHvmRgRY3mt3qQ3SjZ3aUPQTfHkj4rKeoQM6VJrenD3W";
-const DAPPSTAKING_DEVELOPER_ID = "WayJSoeDvHLJ8rXPqrPyQQwznntbxvjwvmq1AKBpu9phYHr";
+// SHIBUYA
+//const DAPPSTAKING_CONTRACT_ID = "Xz3sHvmRgRY3mt3qQ3SjZ3aUPQTfHkj4rKeoQM6VJrenD3W";
+//const DAPPSTAKING_DEVELOPER_ID = "WayJSoeDvHLJ8rXPqrPyQQwznntbxvjwvmq1AKBpu9phYHr";
+
+// SHIDEN
+const DAPPSTAKING_CONTRACT_ID = "X6ykUS6L6CH4EoZitZsYJsCxH2AGk2ky9G6a2xeu1W9ffTP";
+const DAPPSTAKING_DEVELOPER_ID = "aqcmQUATZiaHmZtueE5chfSZRTvsvtSpmx57fZBhktDt4Rm";
 
 async function getCurrentEra(): Promise<bigint> {
 	let currentEra = BigInt(0);
@@ -223,12 +228,12 @@ export async function raffleDone(event: WasmEvent<RaffleDoneEvent>): Promise<voi
     await logger.info("---------- Raffle Done  --------- ");
 
 	const [contract, era, pendingRewards, nbWinners, nbParticipants, totalValue] = event.args;
-    await logger.info("contract: " + contract);
-    await logger.info("era: " + era);
-    await logger.info("pendingRewards: " + pendingRewards);
-    await logger.info("nbWinners: " + nbWinners);
-    await logger.info("nbParticipants: " + nbParticipants);
-    await logger.info("totalValue: " + totalValue);
+    //await logger.info("contract: " + contract);
+    //await logger.info("era: " + era);
+    //await logger.info("pendingRewards: " + pendingRewards);
+    //await logger.info("nbWinners: " + nbWinners);
+    //await logger.info("nbParticipants: " + nbParticipants);
+    //await logger.info("totalValue: " + totalValue);
 
 	let raffleDone = new RaffleDone(`${event.blockNumber.valueOf()}-${event.eventIndex.valueOf()}`);
 	raffleDone.era = era.valueOf();
@@ -252,9 +257,9 @@ export async function pendingReward(event: WasmEvent<PendingRewardEvent>): Promi
     await logger.info("---------- Pending Reward --------- ");
 
 	const [account, era, amount] = event.args;
-    await logger.info("account: " + account);
-    await logger.info("era: " + era);
-    await logger.info("amount: " + amount);
+    //await logger.info("account: " + account);
+    //await logger.info("era: " + era);
+    //await logger.info("amount: " + amount);
 
     let userAccount = await getAccount(account.toString());
 	userAccount.totalRewards += amount.toBigInt();
@@ -280,8 +285,8 @@ export async function rewardsClaimed(event: WasmEvent<RewardsClaimedEvent>): Pro
     await logger.info("---------- Rewards Claimed --------- ");
 
 	const [account, amount] = event.args;
-    await logger.info("account: " + account);
-    await logger.info("amount: " + amount);
+    //await logger.info("account: " + account);
+    //await logger.info("amount: " + amount);
 
     let userAccount = await getAccount(account.toString());
 	userAccount.totalClaimed += amount.toBigInt();
